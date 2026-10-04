@@ -23,13 +23,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase repository name
+        run: |
+          echo "GHCR_REPO=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Build image
         run: |
           docker build \
-            -t ghcr.io/${{ github.repository }}:${{ github.sha }} \
+            -t ghcr.io/${{ env.GHCR_REPO }}:${{ github.sha }} \
             .
 
       - name: Push image
         run: |
           docker push \
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ env.GHCR_REPO }}:${{ github.sha }}
