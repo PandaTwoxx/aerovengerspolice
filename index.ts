@@ -1033,7 +1033,7 @@ client.login(Bun.env.DISCORD_TOKEN);
 
 client.user!.setPresence({ 
     activities: [{ 
-        name: '😖 14 hours', 
+        name: '😖 14 hours 😖', 
         type: ActivityType.Competing
     }], 
     status: 'online' 
