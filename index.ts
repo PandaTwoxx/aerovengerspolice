@@ -7,6 +7,7 @@ import {
   PermissionFlagsBits,
   Message,
   Guild,
+  ActivityType,
 } from "discord.js";
 import { GoogleGenAI, Type, ThinkingLevel, type Content } from "@google/genai";
 import { Database } from "bun:sqlite";
@@ -1029,3 +1030,11 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.login(Bun.env.DISCORD_TOKEN);
+
+client.user!.setPresence({ 
+    activities: [{ 
+        name: '😖 14 hours', 
+        type: ActivityType.Competing
+    }], 
+    status: 'online' 
+});
