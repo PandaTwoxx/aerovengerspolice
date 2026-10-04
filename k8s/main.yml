@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aerovengers-police
+  namespace: default
+  labels:
+    app: aerovengers-police
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aerovengers-police
+  template:
+    metadata:
+      labels:
+        app: aerovengers-police
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: aerovengers-police
+          image: ghcr.io/pandatwoxx/aerovengers-police:latest # Replace with your target commit SHA or image tag
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aerovengers-police-service
+  namespace: default
+spec:
+  selector:
+    app: aerovengers-police
