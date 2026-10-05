@@ -953,7 +953,13 @@ async function buildInput(message: Message, pinged: boolean) {
 }
 
 // ======================= event handlers =======================
-client.once(Events.ClientReady, (c) => console.log(`Logged in as ${c.user.tag}`));
+client.once(Events.ClientReady, (c) => {
+  console.log(`Logged in as ${c.user.tag}`);
+  c.user.setPresence({
+    activities: [{ name: "😖 14 hours 😖", type: ActivityType.Competing }],
+    status: "online",
+  });
+});
 
 client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot || !message.content.trim()) return;
@@ -1030,11 +1036,3 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.login(Bun.env.DISCORD_TOKEN);
-
-client.user!.setPresence({ 
-    activities: [{ 
-        name: '😖 14 hours 😖', 
-        type: ActivityType.Competing
-    }], 
-    status: 'online' 
-});
