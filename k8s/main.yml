@@ -38,6 +38,9 @@ spec:
             # Set this if your app reads DB path from an environment variable
             - name: DATABASE_URL
               value: "/app/data/memory.sqlite"
+          envFrom:
+            - secretRef:
+                name: aerovengers-secrets
           volumeMounts:
             - name: sqlite-storage
               mountPath: /app/data
