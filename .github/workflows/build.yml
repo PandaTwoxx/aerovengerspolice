@@ -27,13 +27,12 @@ jobs:
         run: |
           echo "GHCR_REPO=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      - name: Build image
+      - name: Build and Push image
         run: |
           docker build \
             -t ghcr.io/${{ env.GHCR_REPO }}:${{ github.sha }} \
+            -t ghcr.io/${{ env.GHCR_REPO }}:latest \
             .
 
-      - name: Push image
-        run: |
-          docker push \
-            ghcr.io/${{ env.GHCR_REPO }}:${{ github.sha }}
+          docker push ghcr.io/${{ env.GHCR_REPO }}:${{ github.sha }}
+          docker push ghcr.io/${{ env.GHCR_REPO }}:latest
