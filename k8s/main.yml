@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sqlite-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +31,16 @@ spec:
         - name: ghcr-secret
       containers:
         - name: aerovengers-police
-          image: ghcr.io/pandatwoxx/aerovengers-police:latest # Replace with your target commit SHA or image tag
+          image: ghcr.io/pandatwoxx/aerovengers-police:latest
+          ports:
+            - containerPort: 8080
+          env:
+            # Set this if your app reads DB path from an environment variable
+            - name: DATABASE_URL
+              value: "/app/data/memory.sqlite"
+          volumeMounts:
+            - name: sqlite-storage
+              mountPath: /app/data
           resources:
             requests:
               memory: "128Mi"
@@ -27,6 +48,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+      volumes:
+        - name: sqlite-storage
+          persistentVolumeClaim:
+            claimName: sqlite-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -34,5 +59,9 @@ metadata:
   name: aerovengers-police-service
   namespace: default
 spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
   selector:
     app: aerovengers-police
