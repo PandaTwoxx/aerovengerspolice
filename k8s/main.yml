@@ -37,7 +37,7 @@ spec:
           env:
             # Set this if your app reads DB path from an environment variable
             - name: DATABASE_URL
-              value: "/app/data/memory.sqlite"
+              value: "/app/memory.sqlite"
           envFrom:
             - secretRef:
                 name: aerovengers-secrets
