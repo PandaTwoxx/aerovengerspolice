@@ -31,7 +31,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: aerovengers-police
-          image: ghcr.io/pandatwoxx/aerovengers-police:latest
+          image: ghcr.io/pandatwoxx/aerovengerspolice:latest
           ports:
             - containerPort: 8080
           env:
