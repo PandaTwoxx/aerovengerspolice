@@ -953,11 +953,51 @@ async function buildInput(message: Message, pinged: boolean) {
 }
 
 // ======================= event handlers =======================
-client.once(Events.ClientReady, (c) => {
+client.once(Events.ClientReady, async (c) => {
   console.log(`Logged in as ${c.user.tag}`);
   c.user.setPresence({
     activities: [{ name: "😖 14 hours 😖", type: ActivityType.Competing }],
     status: "online",
+  });
+
+  try {
+    const commands = await c.application.commands.fetch();
+    const pingCommand = commands.find((command) => command.name === "ping");
+    if (pingCommand) {
+      await pingCommand.edit({ description: "Ping the Pong role" });
+    } else {
+      await c.application.commands.create({ name: "ping", description: "Ping the Pong role" });
+    }
+  } catch (error) {
+    console.error("Failed to register /ping command:", error);
+  }
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isChatInputCommand() || interaction.commandName !== "ping") return;
+
+  const guild = interaction.guild;
+  if (!guild) {
+    await interaction.reply({ content: "This command only works in a server.", ephemeral: true });
+    return;
+  }
+
+  const role = guild.roles.cache.find((candidate) => candidate.name === "Pong");
+  if (!role) {
+    await interaction.reply({ content: 'This server does not have a "Pong" role.', ephemeral: true });
+    return;
+  }
+  if (!role.mentionable && !interaction.appPermissions.has(PermissionFlagsBits.MentionEveryone)) {
+    await interaction.reply({
+      content: 'The "Pong" role is not mentionable, and I lack permission to ping it.',
+      ephemeral: true,
+    });
+    return;
+  }
+
+  await interaction.reply({
+    content: `Pong! <@&${role.id}>`,
+    allowedMentions: { roles: [role.id] },
   });
 });
 
